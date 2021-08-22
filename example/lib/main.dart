@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:logger/logger.dart';
-import 'package:logger_flutter_console/logger_flutter.dart';
+import 'package:logger_flutter_console/logger_flutter_console.dart';
 
 void main() {
   runApp(MyApp());
