@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:logger/logger.dart';
-import 'package:logger_flutter/logger_flutter.dart';
+import 'package:logger_flutter_console/logger_flutter.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,6 +18,7 @@ var loggerNoStack = Logger(
 );
 
 void log() {
+  LogConsole.init();
   logger.d("Log message with 2 methods");
 
   loggerNoStack.i("Info message");
@@ -37,11 +38,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: LogConsoleOnShake(
+        body: LogConsole(
           dark: true,
-          child: Center(
-            child: Text("Shake Phone to open Console."),
-          ),
+          showCloseButton: true,
+          showCopyButton: true,
+          copyCallback: (v) {
+            print(v);
+          },
         ),
       ),
     );

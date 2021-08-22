@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  logger_flutter:
+  logger_flutter_console:
     path: ../
 
 flutter:

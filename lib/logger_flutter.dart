@@ -1,5 +1,5 @@
 /// Flutter extension for logger
-library logger_flutter;
+library logger_flutter_console;
 
 import 'dart:collection';
 import 'dart:io';

@@ -1,14 +1,19 @@
-part of logger_flutter;
+part of logger_flutter_console;
 
 ListQueue<OutputEvent> _outputEventBuffer = ListQueue();
 int _bufferSize = 20;
 bool _initialized = false;
 
+typedef void LogConsoleCopyCallback(String text);
+
 class LogConsole extends StatefulWidget {
   final bool dark;
   final bool showCloseButton;
+  final bool showCopyButton;
 
-  LogConsole({this.dark = false, this.showCloseButton = false})
+  final LogConsoleCopyCallback copyCallback;
+
+  LogConsole({this.dark = false, this.showCloseButton = false, this.showCopyButton = false, this.copyCallback = null})
       : assert(_initialized, "Please call LogConsole.init() first.");
 
   static void init({int bufferSize = 20}) {
@@ -33,8 +38,9 @@ class RenderedEvent {
   final Level level;
   final TextSpan span;
   final String lowerCaseText;
+  final String raw;
 
-  RenderedEvent(this.id, this.level, this.span, this.lowerCaseText);
+  RenderedEvent(this.id, this.level, this.span, this.lowerCaseText, this.raw);
 }
 
 class _LogConsoleState extends State<LogConsole> {
@@ -70,8 +76,7 @@ class _LogConsoleState extends State<LogConsole> {
 
     _scrollController.addListener(() {
       if (!_scrollListenerEnabled) return;
-      var scrolledToBottom = _scrollController.offset >=
-          _scrollController.position.maxScrollExtent;
+      var scrolledToBottom = _scrollController.offset >= _scrollController.position.maxScrollExtent;
       setState(() {
         _followBottom = scrolledToBottom;
       });
@@ -195,6 +200,17 @@ class _LogConsoleState extends State<LogConsole> {
             ),
           ),
           Spacer(),
+          if (widget.showCopyButton)
+            IconButton(
+              icon: Icon(Icons.copy),
+              onPressed: () {
+                var text = "";
+                _filteredBuffer.forEach((element) {
+                  text += element.level.toString() + ": " + element.raw + "\n";
+                });
+                this.widget.copyCallback(text);
+              },
+            ),
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
@@ -300,12 +316,7 @@ class _LogConsoleState extends State<LogConsole> {
     var parser = AnsiParser(widget.dark);
     var text = event.lines.join('\n');
     parser.parse(text);
-    return RenderedEvent(
-      _currentId++,
-      event.level,
-      TextSpan(children: parser.spans),
-      text.toLowerCase(),
-    );
+    return RenderedEvent(_currentId++, event.level, TextSpan(children: parser.spans), text.toLowerCase(), text);
   }
 
   @override
