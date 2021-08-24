@@ -1,3 +1,6 @@
+## 0.7.1+2
+- Provided cached buffer to world
+
 ## 0.7.1+1
 - Add copy button
 

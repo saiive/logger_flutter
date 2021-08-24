@@ -29,6 +29,10 @@ class LogConsole extends StatefulWidget {
     });
   }
 
+  static ListQueue<OutputEvent> getCachedEvents() {
+    return _outputEventBuffer;
+  }
+
   @override
   _LogConsoleState createState() => _LogConsoleState();
 }
